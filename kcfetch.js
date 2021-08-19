@@ -43,7 +43,7 @@ const newKcfetch = ({  }={}) => {
             }
 
             const request = () => (
-                kcfetch.keycloak.updateToken(refreshBuffer || 10).then((refreshed) => {
+                kcfetch.keycloak.updateToken(refreshBuffer || kcfetch.refreshBuffer).then((refreshed) => {
                     fetch(url, {
                         ...options, headers: {...options.headers, Authorization: 'Bearer ' + kcfetch.keycloak.token}
                     }).then(resolve).catch(reject);
@@ -80,7 +80,7 @@ const newKcfetch = ({  }={}) => {
         })
         return kcfetch._initPromise;
     };
-
+    kcfetch.refreshBuffer = 10;
     kcfetch.Factory = newKcfetch;
     return kcfetch;
 }
