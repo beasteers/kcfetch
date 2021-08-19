@@ -39,11 +39,14 @@ Keycloak JS Adapter Reference: [here](https://www.keycloak.org/docs/latest/secur
         // but I think that's annoying to add so I append `/auth` internally.
         // if you don't want that, set this to true
         urlAsIs: false,
-    }).then((kcfetch) => {
+    }).then(() => {
         // in here, keycloak is all ready to go!
         
     })
  
+  // kcfetch will wait for the init promise internally if it was started,
+  // meaning that kcfetch calls don't need to live inside the .then() call.
+  // if .init() was not called, it will throw an error.
   kcfetch('https://api.myproject.com/api/data')
           .then(r => r.json())
           .then((data) => console.log('yay!', data))
