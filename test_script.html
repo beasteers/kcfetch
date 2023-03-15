@@ -1,0 +1,37 @@
+<html>
+    <body>
+        <pre><code id="token">hmm.</code></pre>
+        <pre><code id="idtoken">hmm.</code></pre>
+        <pre><code id="refreshtoken">hmm.</code></pre>
+        <pre><code id="users">hmm.</code></pre>
+        <script src="./kcfetch.js"></script>
+        <script>
+            const params = new URLSearchParams((new URL(window.location.href)).search)
+            kcfetch.init({
+                url: params.get("auth_url") || "http://localhost:8090",
+                clientId: params.get("client") || "localhost",
+                realm: params.get("realm"),
+                //realm: "master",
+            }).then((keycloak) => {
+                //console.log(kcfetch, keycloak)
+                const token = document.getElementById("token");
+                token.innerHTML = JSON.stringify(keycloak.tokenParsed, null, 2);
+                const idtoken = document.getElementById("idtoken");
+                idtoken.innerHTML = JSON.stringify(keycloak.idTokenParsed, null, 2);
+                const refreshtoken = document.getElementById("refreshtoken");
+                refreshtoken.innerHTML = JSON.stringify(keycloak.refreshTokenParsed, null, 2);
+
+                kcfetch(`${kcfetch.url}/admin/realms/${kcfetch.realm}/users`).then(r=>r.json()).then(d => {
+                    const users = document.getElementById("users");
+                    users.innerHTML = JSON.stringify(d, null, 2);
+                }).catch(err => console.error(err));
+            })
+
+            // const output = document.getElementById("blah");
+            // kcfetch("https://directus.dep.floodlabs.nyc/api/collections").then(r => r.json()).then(d => {
+            //     output.innerHTML = JSON.stringify(d, null, 2);
+            // })
+        </script>
+
+    </body>
+</html>

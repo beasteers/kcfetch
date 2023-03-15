@@ -1,0 +1,34 @@
+version: '3.7'
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:20.0.1
+    container_name: keycloak
+    restart: unless-stopped
+    command: start-dev
+    ports:
+      - 8090:8080
+    depends_on:
+      - db
+    environment:
+      KC_HOSTNAME: localhost:8090
+      KC_DB_URL_HOST: db
+      KC_DB_URL_PORT: '5432'
+      # it needs both for some reason
+      KC_DB: postgres
+      KC_DB_URL_DATABASE: postgres
+
+      KC_DB_SCHEMA: keycloak
+      KC_DB_USERNAME: "${ADMIN_USER:-admin}"
+      KC_DB_PASSWORD: "${ADMIN_PASS:-admin}"
+      KEYCLOAK_ADMIN: "${ADMIN_USER:-admin}"
+      KEYCLOAK_ADMIN_PASSWORD: "${ADMIN_PASS:-admin}"
+      KC_HTTP_ENABLED: 'true'
+      KC_PROXY: edge
+
+  db:
+    container_name: postgres
+    image: postgis/postgis:13-master
+    environment:
+      POSTGRES_USER: ${ADMIN_USER:-admin}
+      POSTGRES_PASSWORD: ${ADMIN_PASS:-admin}
+      POSTGRES_DB: postgres

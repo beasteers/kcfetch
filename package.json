@@ -1,0 +1,30 @@
+{
+  "name": "@beasteers/kcfetch",
+  "version": "1.0.0",
+  "description": "Simple automatic fetch for keycloak-protected routes.",
+  "main": "kcfetch.js",
+  "exports": "./kcfetch.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "npx http-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beasteers/kcfetch.git"
+  },
+  "keywords": [
+    "keycloak",
+    "fetch",
+    "token",
+    "refresh",
+    "auto",
+    "simple",
+    "vanilla"
+  ],
+  "author": "Bea Steers",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/beasteers/kcfetch/issues"
+  },
+  "homepage": "https://github.com/beasteers/kcfetch#readme"
+}
