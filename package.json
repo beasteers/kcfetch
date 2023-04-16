@@ -1,6 +1,6 @@
 {
-  "name": "@beasteers/kcfetch",
-  "version": "1.0.0",
+  "name": "@bea.steers/kcfetch",
+  "version": "1.0.1",
   "description": "Simple automatic fetch for keycloak-protected routes.",
   "main": "kcfetch.js",
   "exports": "./kcfetch.js",
