@@ -1,5 +1,5 @@
 # kcfetch
-Use fetch with keycloak with vanilla JS
+Use fetch with keycloak with vanilla JS or with React if you want!
 
 All you need is:
  - a keycloak server
@@ -35,13 +35,10 @@ Keycloak JS Adapter Reference: [here](https://www.keycloak.org/docs/latest/secur
 
         // options to pass to keycloak.init(). see js adapter reference above.
         initOptions: { onLoad: 'login-required' } // this is the default
-        // keycloak.js expects a url like: `https://auth.myproject.com/auth`.
-        // but I think that's annoying to add so I append `/auth` internally.
-        // if you don't want that, set this to true
-        urlAsIs: false,
-    }).then(() => {
+        // initOptions: { onLoad: 'check-sso' } // use this if you don't want to automatically redirect to the login page.
+    }).then(keycloak => {
         // in here, keycloak is all ready to go!
-        
+        // you can access using either: keycloak or kcfetch.keycloak
     })
  
   // kcfetch will wait for the init promise internally if it was started,

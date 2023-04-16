@@ -8,6 +8,7 @@
                 url: params.get("auth_url") || "http://localhost:8090",
                 clientId: params.get("client") || "localhost",
                 realm: params.get("realm"),
+                initOptions: {onLoad: 'check-sso'},
                 //realm: "master",
             }).then((keycloak) => {
                 //console.log(kcfetch, keycloak)
@@ -18,7 +19,7 @@
                 const refreshtoken = document.getElementById("refreshtoken");
                 refreshtoken.innerHTML = JSON.stringify(keycloak.refreshTokenParsed, null, 2);
 
-                kcfetch(`${kcfetch.url}/admin/realms/${kcfetch.realm}/users`).then(r=>r.json()).then(d => {
+                kcfetch(`${kcfetch.url}/admin/realms/${kcfetch.realm}/users`, {allowPublic: true}).then(r=>r.json()).then(d => {
                     const users = document.getElementById("users");
                     users.innerHTML = JSON.stringify(d, null, 2);
                 }).catch(err => console.error(err));
@@ -31,6 +32,8 @@
         </script>
     </head>
     <body>
+        <button onclick="kcfetch.keycloak.login()">Login</button>
+        <button onclick="kcfetch.keycloak.logout()">Logout</button>
         <pre><code id="token">hmm.</code></pre>
         <pre><code id="idtoken">hmm.</code></pre>
         <pre><code id="refreshtoken">hmm.</code></pre>

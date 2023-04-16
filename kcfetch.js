@@ -63,8 +63,8 @@ const insertScript = (url) => (
 * Initializes a kcfetch function.
 * @summary This is a callable that automatically handles keycloak authentication.
 */
-const KcFetch = ({  }={}) => {
-    const kcfetch = (url, options={}, refreshBuffer) => {
+const KcFetch = ({}={}) => {
+    const kcfetch = (url, { refreshBuffer, allowPublic=false, ...options }={}) => {
         return new Promise((resolve, reject) => {
 
             // first, check if the kcfetch has already been initialized.
@@ -74,15 +74,22 @@ const KcFetch = ({  }={}) => {
             }
 
             // this is the function that makes the fetch request.
-            const request = () => (
+            const request = () => {
+                if (allowPublic && !kcfetch?.keycloak?.authenticated) {
+                    return kcfetch.fetch(url, options).then(resolve).catch(reject);
+                }
                 kcfetch.keycloak.updateToken(refreshBuffer || kcfetch.refreshBuffer).then((refreshed) => {
-                    fetch(url, {
+                    kcfetch.fetch(url, {
                         ...options, headers: {...options.headers, Authorization: 'Bearer ' + kcfetch.keycloak.token}
                     }).then(resolve).catch(reject);
-                }).catch((e) => { 
+                }).catch((e) => {
+                    if (allowPublic) {
+                        return kcfetch.fetch(url, options).then(resolve).catch(reject);
+                    }
                     console.error('Failed to refresh token', e);
                 })
-            )
+            
+            }
 
             // then just call the request function, possibly waiting for keycloak to initialize.
             const kc = kcfetch.keycloak;
@@ -98,11 +105,13 @@ const KcFetch = ({  }={}) => {
         initOptions={ onLoad: 'login-required' }, // options to pass to keycloak.init
         refreshBuffer=10, // the minimum time to expiration before refreshing token. Default is 10
         // appendAuth=false, // don't append /auth to the keycloak url (because you have already)
+        fetch=((...args) => window.fetch(...args)),
     }) => {
         realm = realm || 'master';
         kcfetch.url = url;
         kcfetch.realm = realm;
         kcfetch.clientId = clientId;
+        kcfetch.fetch = fetch;
 
         // create the keycloak initialization promise.
         kcfetch.initialized = new Promise((resolve, reject) => {
